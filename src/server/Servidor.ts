@@ -43,9 +43,12 @@ class Servidor {
       })
       .then(() => {
         console.log(`🚀 Servidor online na porta: ${this.port}`)
+        console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`)
+        console.log(`🗄️  Banco de dados: ${process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'não configurado'}`)
       })
-      .catch((error: string) => {
-        console.log(`🪲 Erro ao inicializar o servidor: ${error}`)
+      .catch((error: Error) => {
+        console.error(`❌ Erro ao inicializar o servidor:`, error.message)
+        console.error(`📋 Stack trace:`, error.stack)
         process.exit(1)
       })
   }

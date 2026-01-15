@@ -59,6 +59,10 @@ USER nodejs
 # Expõe a porta da aplicação
 EXPOSE 3333
 
+# Healthcheck para monitorar o container
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3333', (r) => {process.exit(r.statusCode === 404 ? 0 : 1)})"
+
 # Define variáveis de ambiente para produção
 ENV NODE_ENV=production
 
