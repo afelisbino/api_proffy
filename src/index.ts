@@ -1,11 +1,15 @@
 import {
   routesAuth,
+  routesBoletim,
   routesDiarioTurma,
   routesEscola,
+  routesFrequencia,
   routesMatriculas,
   routesMensagemWhatsApp,
+  routesRelatorioAluno,
   routesReportBug,
   routesTurma,
+  routesTurmasProfessor,
 } from './routes/routes'
 import Servidor from './server/Servidor'
 
@@ -21,5 +25,9 @@ routesTurma(server.getServico())
 routesReportBug(server.getServico())
 routesDiarioTurma(server.getServico())
 routesMatriculas(server.getServico())
+routesRelatorioAluno(server.getServico())
+routesFrequencia(server.getServico())
+routesBoletim(server.getServico())
+routesTurmasProfessor(server.getServico())
 
 server.inicializar()

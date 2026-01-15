@@ -1,12 +1,16 @@
 import type { FastifyInstance } from 'fastify'
 
 import AuthController from '../controllers/AuthController'
+import BoletimController from '../controllers/BoletimController'
 import DiarioTurmaController from '../controllers/DiarioTurmaController'
 import EscolaController from '../controllers/EscolaController'
+import FrequenciaController from '../controllers/FrequenciaController'
 import MatriculaAlunoController from '../controllers/MatriculaAlunoController'
 import MensagemController from '../controllers/MensagemController'
+import RelatorioAlunoController from '../controllers/RelatorioAlunoController'
 import ReportBugController from '../controllers/ReportController'
 import TurmaController from '../controllers/TurmaController'
+import TurmasProfessorController from '../controllers/TurmasProfessorController'
 
 export const routesEscola = (server: FastifyInstance) => {
   const escolaController = new EscolaController()
@@ -154,6 +158,10 @@ export const routesTurma = (server: FastifyInstance) => {
   server.register(turmaController.verificaChamadaRealizadaTurma, {
     prefix: 'chamada'
   })
+
+  server.register(turmaController.alterarPresencaChamada, {
+    prefix: 'turma',
+  })
 }
 
 export const routesDiarioTurma = (server: FastifyInstance) => {
@@ -229,5 +237,65 @@ export const routesMatriculas = (server: FastifyInstance) => {
 
   server.register(matriculaController.atualizarPermissaoNotificacaoContato, {
     prefix: 'matricula',
+  })
+}
+
+export const routesRelatorioAluno = (server: FastifyInstance) => {
+  const relatorioController = new RelatorioAlunoController()
+
+  server.register(relatorioController.listarRelatorios, {
+    prefix: 'relatorio-aluno',
+  })
+
+  server.register(relatorioController.cadastrarRelatorio, {
+    prefix: 'relatorio-aluno',
+  })
+
+  server.register(relatorioController.editarRelatorio, {
+    prefix: 'relatorio-aluno',
+  })
+
+  server.register(relatorioController.gerarRelatorioPDF, {
+    prefix: 'relatorio-aluno',
+  })
+}
+
+export const routesFrequencia = (server: FastifyInstance) => {
+  const frequenciaController = new FrequenciaController()
+
+  server.register(frequenciaController.gerarRelatorioFrequencia, {
+    prefix: 'frequencia',
+  })
+}
+
+export const routesBoletim = (server: FastifyInstance) => {
+  const boletimController = new BoletimController()
+
+  server.register(boletimController.gerarBoletim, {
+    prefix: 'boletim',
+  })
+}
+
+export const routesTurmasProfessor = (server: FastifyInstance) => {
+  const turmasProfessorController = new TurmasProfessorController()
+
+  server.register(turmasProfessorController.minhasTurmas, {
+    prefix: 'turmas-professor',
+  })
+
+  server.register(turmasProfessorController.listarVinculos, {
+    prefix: 'turmas-professor',
+  })
+
+  server.register(turmasProfessorController.vincularTurma, {
+    prefix: 'turmas-professor',
+  })
+
+  server.register(turmasProfessorController.desvincularTurma, {
+    prefix: 'turmas-professor',
+  })
+
+  server.register(turmasProfessorController.atualizarVinculos, {
+    prefix: 'turmas-professor',
   })
 }

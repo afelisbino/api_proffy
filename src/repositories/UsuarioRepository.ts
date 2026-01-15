@@ -1,7 +1,7 @@
 import type { InserirUsuarioEscolaProps } from '../interfaces/EscolaInterface'
 import type { AlterarSenhaUsuarioProps, ValidarCredenciaisUsuarioProps } from '../interfaces/UsuarioInterface'
 import { prisma } from '../libraries/PrismaClient'
-import { criptografarSenha, validarSenhaCriptografada } from '../utils/Bcrypt'
+import { validarSenhaCriptografada } from '../utils/Bcrypt'
 
 export async function validarCredenciaisUsuario({
   email,
@@ -43,7 +43,7 @@ export async function inserirUsuarioEscola({
   })
 }
 
-export async function listarUsuariosEscola(idEscola: string) {
+export async function listarUsuariosEscola(idEscola: string, perfil?: string) {
   return await prisma.usuario.findMany({
     select: {
       id: true,
@@ -54,6 +54,7 @@ export async function listarUsuariosEscola(idEscola: string) {
     },
     where: {
       idEscola,
+      ...(perfil && { perfil }),
     },
   })
 }
@@ -94,7 +95,7 @@ export async function modificarStatus(
   })
 }
 
-export async function modificarSenhaUsuario({id, idEscola, senha}: AlterarSenhaUsuarioProps){
+export async function modificarSenhaUsuario({ id, idEscola, senha }: AlterarSenhaUsuarioProps) {
   return await prisma.usuario.update({
     where: {
       id,

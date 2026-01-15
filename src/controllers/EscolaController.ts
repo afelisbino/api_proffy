@@ -81,14 +81,26 @@ class EscolaController {
   }
 
   async listarUsuariosEscola(app: FastifyInstance) {
+    const querySchema = z.object({
+      perfil: z.enum(['ADMIN', 'PROFESSOR']).optional(),
+    })
+
     app.get('/usuario', async (req, res) => {
       const cookieSession = req.cookies
       const idEscola = cookieSession['session-company']
 
       if (idEscola) {
-        const usuariosEscola = await listarUsuariosEscola(idEscola)
+        try {
+          const { perfil } = await querySchema.parseAsync(req.query)
+          const usuariosEscola = await listarUsuariosEscola(idEscola, perfil)
 
-        res.status(200).send(usuariosEscola)
+          res.status(200).send(usuariosEscola)
+        } catch (error) {
+          res.status(400).send({
+            mensagem: 'Erro ao listar usuários',
+            erro: error,
+          })
+        }
       } else {
         res.status(401).send({
           mensagem: 'Usuário não logado',
@@ -327,13 +339,13 @@ class EscolaController {
       const idEscola = cookieSession['session-company']
 
       if (idEscola) {
-        try{
+        try {
           await modificarSenhaUsuario({
             id,
             senha: criptografarSenha(novaSenha),
             idEscola,
           })
-  
+
           res.status(200).send({
             status: true,
             msg: 'Senha alterada com sucesso',

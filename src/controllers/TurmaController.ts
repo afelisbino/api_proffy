@@ -10,6 +10,7 @@ import {
 } from '../repositories/AlunoRepository'
 import {
   alterarNomeTurma,
+  atualizarPresencaChamada,
   buscaChamadaTurmaRealizada,
   historicoFrequenciaAlunosTurma,
   inserirTurma,
@@ -404,7 +405,7 @@ class TurmaController {
         dataLetivoFim: fim
       })
 
-      res.status(200).send(historicoFrequencia.map(({id, idAluno, aluno, dataChamada, presenca}) => ({
+      res.status(200).send(historicoFrequencia.map(({ id, idAluno, aluno, dataChamada, presenca }) => ({
         id,
         idAluno,
         dataChamada,
@@ -414,7 +415,7 @@ class TurmaController {
     })
   }
 
-  async verificaChamadaRealizadaTurma(app: FastifyInstance){
+  async verificaChamadaRealizadaTurma(app: FastifyInstance) {
     const schemaParam = z.object({
       turma: z.string().uuid(),
     })
@@ -423,7 +424,7 @@ class TurmaController {
       dataChamada: z.coerce.date(),
     })
 
-    app.get('/:turma/verificacao', async(req, res) => {
+    app.get('/:turma/verificacao', async (req, res) => {
       const cookieSession = req.cookies
       const idEscola = cookieSession['session-company']
 
@@ -461,6 +462,51 @@ class TurmaController {
         msg: 'Chamada não realizada nessa turma!',
         chamada: false
       })
+    })
+  }
+
+  async alterarPresencaChamada(app: FastifyInstance) {
+    const bodySchema = z.object({
+      presenca: z.boolean(),
+    })
+
+    const paramSchema = z.object({
+      id: z.string().uuid('ID da chamada inválido'),
+    })
+
+    app.patch('/chamada/:id', async (req, res) => {
+      const cookieSession = req.cookies
+      const idEscola = cookieSession['session-company']
+
+      if (!idEscola) {
+        return res.status(401).send({
+          mensagem: 'Não autorizado',
+        })
+      }
+
+      try {
+        const { id } = await paramSchema.parseAsync(req.params)
+        const { presenca } = await bodySchema.parseAsync(req.body)
+
+        const resultado = await atualizarPresencaChamada(id, presenca, idEscola)
+
+        if (resultado.count === 0) {
+          return res.status(404).send({
+            mensagem: 'Chamada não encontrada',
+          })
+        }
+
+        return res.status(200).send({
+          mensagem: 'Presença atualizada com sucesso',
+          presenca,
+        })
+      } catch (error) {
+        console.error('❌ Erro ao atualizar presença:', error)
+        return res.status(400).send({
+          mensagem: 'Erro ao atualizar presença',
+          erro: error instanceof Error ? error.message : String(error),
+        })
+      }
     })
   }
 }

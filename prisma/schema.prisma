@@ -33,17 +33,20 @@ model Turma {
   escola            Escola              @relation(fields: [idEscola], references: [id])
   Aluno             Aluno[]
   ConteudoAulaTurma ConteudoAulaTurma[]
+  turmasProfessors  TurmasProfessor[]
 }
 
 model Usuario {
-  id       String        @id @default(uuid())
-  nome     String
-  email    String        @unique
-  senha    String
-  status   Boolean       @default(true)
-  perfil   PerfilUsuario @default(PROFESSOR)
-  idEscola String
-  escola   Escola        @relation(fields: [idEscola], references: [id])
+  id               String            @id @default(uuid())
+  nome             String
+  email            String            @unique
+  senha            String
+  status           Boolean           @default(true)
+  perfil           PerfilUsuario     @default(PROFESSOR)
+  idEscola         String
+  escola           Escola            @relation(fields: [idEscola], references: [id])
+  relatorioAlunos  RelatorioAluno[]
+  turmasProfessors TurmasProfessor[]
 }
 
 model ModeloMensagem {
@@ -86,6 +89,7 @@ model Aluno {
   NotificacaoResponsavelAluno NotificacaoResponsavelAluno[]
   ChamadaTurma                ChamadaTurma[]
   NotasProvas                 NotasProvas[]
+  relatorioAlunos             RelatorioAluno[]
 }
 
 model Responsavel {
@@ -167,6 +171,28 @@ model ConteudoAulaTurma {
   turma        Turma      @relation(fields: [idTurma], references: [id], onDelete: Cascade, onUpdate: Cascade)
   idDisciplina String
   disciplina   Disciplina @relation(fields: [idDisciplina], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model RelatorioAluno {
+  id          String      @id @default(uuid())
+  conteudo    String      @db.LongText
+  periodo     String
+  tipoPeriodo TipoPeriodo @default(bimestral)
+  criadoEm    DateTime    @default(now())
+  idAluno     String
+  aluno       Aluno       @relation(fields: [idAluno], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  idProfessor String
+  professor   Usuario     @relation(fields: [idProfessor], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model TurmasProfessor {
+  id          String  @id @default(uuid())
+  idTurma     String
+  turma       Turma   @relation(fields: [idTurma], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  idProfessor String
+  professor   Usuario @relation(fields: [idProfessor], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([idTurma, idProfessor])
 }
 
 enum TipoPeriodo {

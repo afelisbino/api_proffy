@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify'
+import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 
 import {
@@ -110,7 +110,7 @@ class MatriculaAlunoController {
           const statusAluno = await alterarBloqueioNotificacaoAluno(
             id,
             status,
-            idEscola,
+            idEscola
           )
 
           res.status(200).send({
@@ -150,13 +150,13 @@ class MatriculaAlunoController {
 
         if (idEscola) {
           const { idResponsavel, idContato } = await schemaParams.parseAsync(
-            req.params,
+            req.params
           )
 
           try {
             const removeContato = await removerContatoResponsavel(
               idContato,
-              idResponsavel,
+              idResponsavel
             )
 
             res.status(200).send({
@@ -178,7 +178,7 @@ class MatriculaAlunoController {
             msg: 'Sessão encerrada!',
           })
         }
-      },
+      }
     )
   }
 
@@ -383,13 +383,13 @@ class MatriculaAlunoController {
 
         if (idEscola) {
           const { idAluno, idResponsavel } = await schemaParams.parseAsync(
-            req.params,
+            req.params
           )
 
           try {
             const vinculoRemovido = await removerVinculoResponsavelAluno(
               idResponsavel,
-              idAluno,
+              idAluno
             )
 
             res.status(200).send({
@@ -410,7 +410,7 @@ class MatriculaAlunoController {
             msg: 'Sessão encerrada!',
           })
         }
-      },
+      }
     )
   }
 
@@ -432,7 +432,7 @@ class MatriculaAlunoController {
 
         if (idEscola) {
           const { idResponsavel, idContato } = await schemaParams.parseAsync(
-            req.params,
+            req.params
           )
           const { statusBloqueio } = await schemaBody.parseAsync(req.body)
 
@@ -441,7 +441,7 @@ class MatriculaAlunoController {
               await alterarPermissaoNotificacaoTelefoneResponsavel(
                 idContato,
                 idResponsavel,
-                statusBloqueio,
+                statusBloqueio
               )
 
             res.status(200).send({
@@ -462,7 +462,7 @@ class MatriculaAlunoController {
             msg: 'Sessão encerrada!',
           })
         }
-      },
+      }
     )
   }
 
@@ -488,7 +488,7 @@ class MatriculaAlunoController {
         }),
         {
           required_error: 'O telefone é obrigatório',
-        },
+        }
       ),
     })
 
