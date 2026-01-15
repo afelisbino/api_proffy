@@ -17,10 +17,7 @@ class Servidor {
     })
 
     this.servico.register(cors, {
-      origin:
-        process.env.NODE_ENV && process.env.NODE_ENV === 'production'
-          ? 'https://app.proffy.manstock.com.br'
-          : true,
+      origin: true,
       credentials: true,
       exposedHeaders: ['Content-Disposition'],
     })
