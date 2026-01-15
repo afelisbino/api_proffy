@@ -23,6 +23,7 @@
     "@biomejs/biome": "1.9.4",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.12.12",
+    "@types/pdfkit": "^0.17.4",
     "prisma": "^6.5.0",
     "tsup": "^8.0.2",
     "tsx": "^4.10.5",
@@ -37,6 +38,7 @@
     "bcrypt": "^5.1.1",
     "date-fns": "^4.1.0",
     "fastify": "^4.27.0",
+    "pdfkit": "^0.17.2",
     "zod": "^3.23.8"
   }
 }
