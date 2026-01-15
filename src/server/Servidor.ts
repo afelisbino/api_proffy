@@ -17,9 +17,33 @@ class Servidor {
     })
 
     this.servico.register(cors, {
-      origin: true,
+      origin: (origin, callback) => {
+        // Lista de origens permitidas
+        const allowedOrigins = [
+          'https://app.proffy.manstock.com.br',
+          'http://localhost:3000',
+          'http://localhost:3001',
+        ]
+
+        // Em desenvolvimento, permite qualquer origem
+        if (process.env.NODE_ENV !== 'production') {
+          callback(null, true)
+          return
+        }
+
+        // Em produção, verifica se a origem está na lista
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'), false)
+        }
+      },
       credentials: true,
       exposedHeaders: ['Content-Disposition'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
     })
 
     this.servico.register(fastifyCookie, {
