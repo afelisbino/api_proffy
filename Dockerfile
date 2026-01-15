@@ -10,15 +10,17 @@ WORKDIR /app
 # Stage 2: Production Dependencies
 FROM base AS prod-deps
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile
 
 # Stage 3: Build - Instala todas dependências e gera Prisma Client
 FROM base AS build
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY tsconfig.json ./
+RUN pnpm install --frozen-lockfile
 RUN pnpm run db:generate
 COPY . .
+RUN pnpm run build
 
 # Stage 4: Production
 FROM node:20-alpine AS production
@@ -39,7 +41,8 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 # Copia dependências de produção e build
-COPY --from=prod-deps --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=build --chown=nodejs:nodejs /app/src ./src
 COPY --from=build --chown=nodejs:nodejs /app/prisma ./prisma
 COPY --from=build --chown=nodejs:nodejs /app/package.json ./
