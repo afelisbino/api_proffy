@@ -12,7 +12,7 @@ class Servidor {
     this.port = port
 
     this.servico = fastify({
-      logger: false,
+      logger: true,
       bodyLimit: 30 * 1024 * 1024,
     })
 

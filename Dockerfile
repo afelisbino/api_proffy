@@ -57,7 +57,7 @@ RUN mkdir -p /app/public/anexos && \
 USER nodejs
 
 # Expõe a porta da aplicação
-EXPOSE 3000
+EXPOSE 3333
 
 # Define variáveis de ambiente para produção
 ENV NODE_ENV=production
