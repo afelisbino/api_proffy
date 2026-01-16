@@ -30,16 +30,15 @@ export async function vincularTurmaProfessor({
       idProfessor,
     },
     select: {
-      id: true,
+      idTurma: true,
       turma: {
         select: {
-          id: true,
           nome: true,
         },
       },
+      idProfessor: true,
       professor: {
         select: {
-          id: true,
           nome: true,
           email: true,
         },
@@ -52,21 +51,13 @@ export async function desvincularTurmaProfessor({
   idTurma,
   idProfessor,
 }: DesvincularTurmaProfessorProps) {
-  // Buscar o vínculo
-  const vinculo = await prisma.turmasProfessor.findFirst({
-    where: {
-      idTurma,
-      idProfessor,
-    },
-  })
-
-  if (!vinculo) {
-    throw new Error('Vínculo não encontrado')
-  }
-
+  // Deletar usando a chave composta
   return await prisma.turmasProfessor.delete({
     where: {
-      id: vinculo.id,
+      idTurma_idProfessor: {
+        idTurma,
+        idProfessor,
+      },
     },
   })
 }
@@ -93,7 +84,6 @@ export async function listarTurmasProfessor({
   const vinculos = await prisma.turmasProfessor.findMany({
     where: whereClause,
     select: {
-      id: true,
       idTurma: true,
       turma: {
         select: {
@@ -123,7 +113,6 @@ export async function listarTurmasProfessor({
   })
 
   return vinculos.map(v => ({
-    id: v.id,
     idTurma: v.idTurma,
     nomeTurma: v.turma.nome,
     idProfessor: v.idProfessor,
@@ -155,7 +144,6 @@ export async function atualizarVinculosTurmasProfessor({
       idProfessor,
     },
     select: {
-      id: true,
       idTurma: true,
     },
   })
@@ -186,7 +174,10 @@ export async function atualizarVinculosTurmasProfessor({
       vinculosParaRemover.map(vinculo =>
         tx.turmasProfessor.delete({
           where: {
-            id: vinculo.id,
+            idTurma_idProfessor: {
+              idTurma: vinculo.idTurma,
+              idProfessor,
+            },
           },
         })
       )
@@ -201,7 +192,6 @@ export async function atualizarVinculosTurmasProfessor({
             idProfessor,
           },
           select: {
-            id: true,
             turma: {
               select: {
                 id: true,

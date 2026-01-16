@@ -21,7 +21,6 @@ export interface ListarTurmasProfessorProps {
 }
 
 export interface TurmaProfessorVinculo {
-  id: string
   idTurma: string
   nomeTurma: string
   idProfessor: string
