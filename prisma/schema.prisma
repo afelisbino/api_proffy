@@ -187,13 +187,12 @@ model RelatorioAluno {
 }
 
 model TurmasProfessor {
-  id          String  @id @default(uuid())
   idTurma     String
   turma       Turma   @relation(fields: [idTurma], references: [id], onDelete: Cascade, onUpdate: Cascade)
   idProfessor String
   professor   Usuario @relation(fields: [idProfessor], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@unique([idTurma, idProfessor])
+  @@id([idTurma, idProfessor])
 }
 
 enum TipoPeriodo {

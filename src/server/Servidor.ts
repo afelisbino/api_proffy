@@ -47,8 +47,8 @@ class Servidor {
         console.log(`🗄️  Banco de dados: ${process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'não configurado'}`)
       })
       .catch((error: Error) => {
-        console.error(`❌ Erro ao inicializar o servidor:`, error.message)
-        console.error(`📋 Stack trace:`, error.stack)
+        console.error('❌ Erro ao inicializar o servidor:', error.message)
+        console.error('📋 Stack trace:', error.stack)
         process.exit(1)
       })
   }
